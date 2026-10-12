@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 
 const app = express();
@@ -9,10 +10,11 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     service: 'medfinder-server',
+    env: process.env.NODE_ENV || 'development',
     time: new Date().toISOString(),
   });
 });
 
 app.listen(PORT, () => {
-  console.log(`[medfinder] server listening on http://localhost:${PORT}`);
+  console.log(`[medfinder] listening on http://localhost:${PORT} (${process.env.NODE_ENV || 'development'})`);
 });
