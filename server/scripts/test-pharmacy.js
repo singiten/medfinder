@@ -5,6 +5,11 @@ import Pharmacy from '../src/models/Pharmacy.js';
 
 async function run() {
   await connectDB();
+  const indexes = await Pharmacy.collection.indexes();
+console.log('Indexes on pharmacies collection:');
+for (const idx of indexes) {
+  console.log('  -', idx.name, JSON.stringify(idx.key));
+}
 
   // Clean up any leftover test pharmacies from previous runs
   await Pharmacy.deleteMany({ licenseNumber: { $regex: /^TEST-/ } });
@@ -32,12 +37,12 @@ async function run() {
     location: {
       $near: {
         $geometry: { type: 'Point', coordinates: centerOfAddis },
-        $maxDistance: 2000, // 2 km in meters
+        $maxDistance: 5000, // 5 km in meters
       },
     },
   });
 
-  console.log(`\nNearby pharmacies within 2km of Meskel Square: ${nearby.length}`);
+  console.log(`\nNearby pharmacies within 5km of Meskel Square: ${nearby.length}`);
   for (const p of nearby) {
     console.log(`  - ${p.name} at [${p.location.coordinates.join(', ')}]`);
   }
