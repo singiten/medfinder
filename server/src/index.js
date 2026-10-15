@@ -5,10 +5,25 @@ import { connectDB } from './config/db.js';
 import medicineRoutes from './routes/medicine.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import pharmacyRoutes from './routes/pharmacy.routes.js';
+import cors from 'cors';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173')
+  .split(',')
+  .map((s) => s.trim());
 
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow requests with no origin (curl, Postman, server-to-server)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      callback(new Error(`CORS: origin ${origin} not allowed`));
+    },
+    credentials: false,
+  })
+);
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
