@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Pharmacy from '../models/Pharmacy.js';
 import Stock from '../models/Stock.js';
-
+import { computeConfidence } from '../services/confidence.service.js';
 const MAX_RADIUS_KM = 50;
 
 export async function nearbyPharmacies(req, res, next) {
@@ -79,13 +79,14 @@ export async function nearbyPharmacies(req, res, next) {
           },
           distanceKm: Math.round(distanceKm * 100) / 100,
           stock: stockDoc
-            ? {
-                quantity: stockDoc.quantity,
-                verificationMethod: stockDoc.verificationMethod,
-                verifiedAt: stockDoc.verifiedAt,
-                expiryDate: stockDoc.expiryDate || null,
-              }
-            : null,
+  ? {
+      quantity: stockDoc.quantity,
+      verificationMethod: stockDoc.verificationMethod,
+      verifiedAt: stockDoc.verifiedAt,
+      expiryDate: stockDoc.expiryDate || null,
+      confidence: computeConfidence({ stock: stockDoc }),
+    }
+  : null,
         };
       });
 
