@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { connectDB } from './config/db.js';
 import medicineRoutes from './routes/medicine.routes.js';
 import authRoutes from './routes/auth.routes.js';
+import pharmacyRoutes from './routes/pharmacy.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,6 +24,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/medicines', medicineRoutes);
+app.use('/api/pharmacies', pharmacyRoutes);   
 
 app.use((err, req, res, next) => {
   console.error('[medfinder] error:', err.message);
